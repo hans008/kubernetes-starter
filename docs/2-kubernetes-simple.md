@@ -278,6 +278,19 @@ calico作为kubernets的CNI插件的配置
 我们从最简单的命令开始，尝试一下kubernetes官方的入门教学：playground的内容。了解如何创建pod，deployments，以及查看他们的信息，深入理解他们的关系。
 具体内容请看慕课网的视频吧：  [《Docker+k8s微服务容器化实践》][1]
 
+```
+在master节点上执行
+root@k8s-master:~# kubectl run kubernetes-bootcamp --image=jocatalin/kubernetes-bootcamp:v1 --port=8000
+deployment.apps "kubernetes-bootcamp" created
+root@k8s-master:~# kubectl get deployments
+NAME                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+kubernetes-bootcamp   1         1         1            0           19s
+root@k8s-master:~# kubectl get pods
+NAME                                   READY     STATUS              RESTARTS   AGE
+kubernetes-bootcamp-7db7b94fcf-x5wtb   0/1       ContainerCreating   0          24s
+
+```
+
 ## 9. 为集群增加service功能 - kube-proxy（工作节点）
 #### 9.1 简介
 每台工作节点上都应该运行一个kube-proxy服务，它监听API server中service和endpoint的变化情况，并通过iptables等来为服务配置负载均衡，是让我们的服务在集群外可以被访问到的重要方式。
