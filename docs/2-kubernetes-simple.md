@@ -333,6 +333,91 @@ ExecStart=/home/michael/bin/kube-proxy \\
 
 #### 9.4 操练service
 刚才我们在基础集群上演示了pod，deployments。下面就在刚才的基础上增加点service元素。具体内容见[《Docker+k8s微服务容器化实践》][1]。
+```
+$ kubectl expose deploy kubernetes-bootcamp --type="NodePort" --target-port=8080 --port=80
+root@k8s-master:/software/kubernetes-starter# kubectl get services
+NAME                  TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+kubernetes            ClusterIP   10.68.0.1     <none>        443/TCP        1d
+kubernetes-bootcamp   NodePort    10.68.43.17   <none>        80:20941/TCP   19s
+
+
+$ curl 172.31.51.103:20941
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-5c444d778c-lv7kw | v=1
+
+从容器中访问集群ip
+root@k8s-master:/software/kubernetes-starter# kubectl get pods -o wide
+NAME                                   READY     STATUS    RESTARTS   AGE       IP              NODE
+kubernetes-bootcamp-5c444d778c-lv7kw   1/1       Running   0          1d        172.20.58.192   172.31.51.103
+nginx                                  1/1       Running   0          1h        172.20.85.194   172.31.51.102
+nginx-deployment-6c54bd5869-5g67b      1/1       Running   0          48m       172.20.85.195   172.31.51.102
+nginx-deployment-6c54bd5869-tmrw4      1/1       Running   0          48m       172.20.58.194   172.31.51.103
+
+root@k8s-master:/software/kubernetes-starter#
+root@k8s-master:/software/kubernetes-starter# kubectl get services
+NAME                  TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+kubernetes            ClusterIP   10.68.0.1     <none>        443/TCP        1d
+kubernetes-bootcamp   NodePort    10.68.43.17   <none>        80:20941/TCP   11m
+
+root@kubernetes-bootcamp-5c444d778c-lv7kw:/# curl 10.68.43.17
+Hello Kubernetes bootcamp! | Running on: kubernetes-bootcamp-5c444d778c-lv7kw | v=1
+
+```
+通过配置文件创建pod,deployment,service
+
+```
+nginx-pod.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx:1.7.9
+      ports:
+        - containerPort: 80
+
+
+
+nginx-deployment.yaml
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+          - containerPort: 80
+          
+          
+
+nginx-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 80
+    nodePort: 20000
+  selector:
+    app: nginx
+  type: NodePort
+```
+
+
 
 
 ## 10. 为集群增加dns功能 - kube-dns（app）
