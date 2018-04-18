@@ -431,6 +431,19 @@ kube-dns.yaml文件基本与官方一致（除了镜像名不同外）。
 #到kubernetes-starter目录执行命令
 $ kubectl create -f target/services/kube-dns.yaml
 ```
+```
+$ kubectl -n kube-system get svc
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)         AGE
+kube-dns   ClusterIP   10.68.0.2    <none>        53/UDP,53/TCP   4m
+
+# kubectl -n kube-system get deploy
+NAME       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+kube-dns   1         1         1            1           6m
+
+# kubectl -n kube-system get pod
+NAME                       READY     STATUS    RESTARTS   AGE
+kube-dns-7cfdcd585-sqlsm   3/3       Running   0          6m
+```
 #### 10.3 重点配置说明
 请直接参考配置文件中的注释。
 
