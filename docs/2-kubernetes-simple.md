@@ -303,6 +303,7 @@ kubectl scale deploy kubernetes-bootcamp --replicas=4
 ```bash
 #确保工作目录存在
 $ mkdir -p /var/lib/kube-proxy
+$ mkdir -p /etc/kubernetes
 #复制kube-proxy服务配置文件
 $ cp target/worker-node/kube-proxy.service /lib/systemd/system/
 #复制kube-proxy依赖的配置文件
