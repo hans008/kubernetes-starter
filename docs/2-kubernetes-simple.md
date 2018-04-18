@@ -289,6 +289,10 @@ root@k8s-master:~# kubectl get pods
 NAME                                   READY     STATUS              RESTARTS   AGE
 kubernetes-bootcamp-7db7b94fcf-x5wtb   0/1       ContainerCreating   0          24s
 
+扩容
+kubectl scale deploy kubernetes-bootcamp --replicas=4
+
+
 ```
 
 ## 9. 为集群增加service功能 - kube-proxy（工作节点）
